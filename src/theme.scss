@@ -1,0 +1,453 @@
+/**
+ * A simple theme for reveal.js presentations, similar
+ * to the default theme. The accent color is darkblue.
+ *
+ * This theme is Copyright (C) 2012 Owen Versteeg, https://github.com/StereotypicalApps. It is MIT licensed.
+ * reveal.js is Copyright (C) 2011-2012 Hakim El Hattab, http://hakim.se
+ */
+
+// Default mixins and settings -----------------
+@mixin vertical-gradient( $top, $bottom ) {
+	background: $top;
+	background: -moz-linear-gradient( top, $top 0%, $bottom 100% );
+	background: -webkit-gradient( linear, left top, left bottom, color-stop(0%,$top), color-stop(100%,$bottom) );
+	background: -webkit-linear-gradient( top, $top 0%, $bottom 100% );
+	background: -o-linear-gradient( top, $top 0%, $bottom 100% );
+	background: -ms-linear-gradient( top, $top 0%, $bottom 100% );
+	background: linear-gradient( top, $top 0%, $bottom 100% );
+}
+
+@mixin horizontal-gradient( $top, $bottom ) {
+	background: $top;
+	background: -moz-linear-gradient( left, $top 0%, $bottom 100% );
+	background: -webkit-gradient( linear, left top, right top, color-stop(0%,$top), color-stop(100%,$bottom) );
+	background: -webkit-linear-gradient( left, $top 0%, $bottom 100% );
+	background: -o-linear-gradient( left, $top 0%, $bottom 100% );
+	background: -ms-linear-gradient( left, $top 0%, $bottom 100% );
+	background: linear-gradient( left, $top 0%, $bottom 100% );
+}
+
+@mixin radial-gradient( $outer, $inner, $type: circle ) {
+	background: $outer;
+	background: -moz-radial-gradient( center, $type cover,  $inner 0%, $outer 100% );
+	background: -webkit-gradient( radial, center center, 0px, center center, 100%, color-stop(0%,$inner), color-stop(100%,$outer) );
+	background: -webkit-radial-gradient( center, $type cover,  $inner 0%, $outer 100% );
+	background: -o-radial-gradient( center, $type cover,  $inner 0%, $outer 100% );
+	background: -ms-radial-gradient( center, $type cover,  $inner 0%, $outer 100% );
+	background: radial-gradient( center, $type cover,  $inner 0%, $outer 100% );
+}
+
+// Base settings for all themes that can optionally be
+// overridden by the super-theme
+
+// Background of the presentation
+$backgroundColor: #2b2b2b;
+
+// Primary/body text
+$mainFont: 'Lato', sans-serif;
+$mainFontSize: 40px;
+$mainColor: #eee;
+
+// Vertical spacing between blocks of text
+$blockMargin: 20px;
+
+// Headings
+$headingMargin: 0 0 $blockMargin 0;
+$headingFont: 'League Gothic', Impact, sans-serif;
+$headingColor: #eee;
+$headingLineHeight: 1.2;
+$headingLetterSpacing: normal;
+$headingTextTransform: uppercase;
+$headingTextShadow: none;
+$headingFontWeight: normal;
+$heading1TextShadow: $headingTextShadow;
+
+$heading1Size: 3.77em;
+$heading2Size: 2.11em;
+$heading3Size: 1.55em;
+$heading4Size: 1.00em;
+
+$codeFont: monospace;
+
+// Links and actions
+$linkColor: #13DAEC;
+$linkColorHover: lighten( $linkColor, 20% );
+
+// Text selection
+$selectionBackgroundColor: #FF5E99;
+$selectionColor: #fff;
+
+// Generates the presentation background, can be overridden
+// to return a background image or gradient
+@mixin bodyBackground() {
+	background: $backgroundColor;
+}
+
+// ---------------------------------------------
+
+// Include theme-specific fonts
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400;1,700&family=Raleway&display=swap");
+
+// Override theme settings (see ../template/settings.scss)
+$mainFont: "Lato", sans-serif;
+$mainColor: #000;
+$headingFont: "Raleway", sans-serif;
+$headingColor: #000;
+$headingTextShadow: none;
+$headingTextTransform: none;
+$backgroundColor: #fff;
+$linkColor: #00008b;
+$linkColorHover: lighten($linkColor, 20%);
+$selectionBackgroundColor: rgba(0, 0, 0, 0.99);
+
+section.has-dark-background {
+    &,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        color: #fff;
+    }
+}
+
+// Base theme template for reveal.js
+
+/*********************************************
+ * GLOBAL STYLES
+ *********************************************/
+
+// Exposes theme's variables for easy re-use in CSS for plugin authors
+
+:root {
+    --background-color: #{$backgroundColor};
+    --main-font: #{$mainFont};
+    --main-font-size: #{$mainFontSize};
+    --main-color: #{$mainColor};
+    --block-margin: #{$blockMargin};
+    --heading-margin: #{$headingMargin};
+    --heading-font: #{$headingFont};
+    --heading-color: #{$headingColor};
+    --heading-line-height: #{$headingLineHeight};
+    --heading-letter-spacing: #{$headingLetterSpacing};
+    --heading-text-transform: #{$headingTextTransform};
+    --heading-text-shadow: #{$headingTextShadow};
+    --heading-font-weight: #{$headingFontWeight};
+    --heading1-text-shadow: #{$heading1TextShadow};
+    --heading1-size: #{$heading1Size};
+    --heading2-size: #{$heading2Size};
+    --heading3-size: #{$heading3Size};
+    --heading4-size: #{$heading4Size};
+    --code-font: #{$codeFont};
+    --link-color: #{$linkColor};
+    --link-color-hover: #{$linkColorHover};
+    --selection-background-color: #{$selectionBackgroundColor};
+    --selection-color: #{$selectionColor};
+}
+
+.reveal-viewport {
+    @include bodyBackground();
+    background-color: $backgroundColor;
+}
+
+.reveal {
+    font-family: $mainFont;
+    font-size: $mainFontSize;
+    font-weight: normal;
+    color: $mainColor;
+}
+
+.reveal ::selection {
+    color: $selectionColor;
+    background: $selectionBackgroundColor;
+    text-shadow: none;
+}
+
+.reveal ::-moz-selection {
+    color: $selectionColor;
+    background: $selectionBackgroundColor;
+    text-shadow: none;
+}
+
+.reveal .slides section,
+.reveal .slides section > section {
+    line-height: 1.3;
+    font-weight: inherit;
+}
+
+/*********************************************
+  * HEADERS
+  *********************************************/
+
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4,
+.reveal h5,
+.reveal h6 {
+    margin: $headingMargin;
+    color: $headingColor;
+
+    font-family: $headingFont;
+    font-weight: $headingFontWeight;
+    line-height: $headingLineHeight;
+    letter-spacing: $headingLetterSpacing;
+
+    text-transform: $headingTextTransform;
+    text-shadow: $headingTextShadow;
+
+    word-wrap: break-word;
+}
+
+.reveal h1 {
+    font-size: $heading1Size;
+}
+.reveal h2 {
+    font-size: $heading2Size;
+}
+.reveal h3 {
+    font-size: $heading3Size;
+}
+.reveal h4 {
+    font-size: $heading4Size;
+}
+
+.reveal h1 {
+    text-shadow: $heading1TextShadow;
+}
+
+/*********************************************
+  * OTHER
+  *********************************************/
+
+.reveal p {
+    margin: $blockMargin 0;
+    line-height: 1.3;
+}
+
+/* Ensure certain elements are never larger than the slide itself */
+.reveal img,
+.reveal video,
+.reveal iframe {
+    max-width: 95%;
+    max-height: 95%;
+}
+.reveal strong,
+.reveal b {
+    font-weight: bold;
+}
+
+.reveal em {
+    font-style: italic;
+}
+
+.reveal ol,
+.reveal dl,
+.reveal ul {
+    display: inline-block;
+
+    text-align: left;
+    margin: 0 0 0 1em;
+}
+
+.reveal ol {
+    list-style-type: decimal;
+}
+
+.reveal ul {
+    list-style-type: disc;
+}
+
+.reveal ul ul {
+    list-style-type: square;
+}
+
+.reveal ul ul ul {
+    list-style-type: circle;
+}
+
+.reveal ul ul,
+.reveal ul ol,
+.reveal ol ol,
+.reveal ol ul {
+    display: block;
+    margin-left: 40px;
+}
+
+.reveal dt {
+    font-weight: bold;
+}
+
+.reveal dd {
+    margin-left: 40px;
+}
+
+.reveal blockquote {
+    display: block;
+    position: relative;
+    width: 70%;
+    margin: $blockMargin auto;
+    padding: 5px;
+
+    font-style: italic;
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.2);
+}
+.reveal blockquote p:first-child,
+.reveal blockquote p:last-child {
+    display: inline-block;
+}
+
+.reveal q {
+    font-style: italic;
+}
+
+.reveal pre {
+    display: block;
+    position: relative;
+    width: 90%;
+    margin: $blockMargin auto;
+
+    text-align: left;
+    font-size: 0.55em;
+    font-family: $codeFont;
+    line-height: 1.2em;
+
+    word-wrap: break-word;
+
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.reveal code {
+    font-family: $codeFont;
+    text-transform: none;
+}
+
+.reveal pre code {
+    display: block;
+    padding: 5px;
+    overflow: auto;
+    max-height: 400px;
+    word-wrap: normal;
+}
+
+.reveal table {
+    margin: auto;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.reveal table th {
+    font-weight: bold;
+}
+
+.reveal table th,
+.reveal table td {
+    text-align: left;
+    padding: 0.2em 0.5em 0.2em 0.5em;
+    border-bottom: 1px solid;
+}
+
+.reveal table th[align="center"],
+.reveal table td[align="center"] {
+    text-align: center;
+}
+
+.reveal table th[align="right"],
+.reveal table td[align="right"] {
+    text-align: right;
+}
+
+.reveal table tbody tr:last-child th,
+.reveal table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.reveal sup {
+    vertical-align: super;
+    font-size: smaller;
+}
+.reveal sub {
+    vertical-align: sub;
+    font-size: smaller;
+}
+
+.reveal small {
+    display: inline-block;
+    font-size: 0.6em;
+    line-height: 1.2em;
+    vertical-align: top;
+}
+
+.reveal small * {
+    vertical-align: top;
+}
+
+.reveal img {
+    margin: $blockMargin 0;
+}
+
+/*********************************************
+  * LINKS
+  *********************************************/
+
+.reveal a {
+    color: $linkColor;
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+.reveal a:hover {
+    color: $linkColorHover;
+    text-shadow: none;
+    border: none;
+}
+
+.reveal .roll span:after {
+    color: #fff;
+    background: darken($linkColor, 15%);
+}
+
+/*********************************************
+  * Frame helper
+  *********************************************/
+
+.reveal .r-frame {
+    border: 4px solid $mainColor;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+}
+
+.reveal a .r-frame {
+    transition: all 0.15s linear;
+}
+
+.reveal a:hover .r-frame {
+    border-color: $linkColor;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.55);
+}
+
+/*********************************************
+  * NAVIGATION CONTROLS
+  *********************************************/
+
+.reveal .controls {
+    color: $linkColor;
+}
+
+/*********************************************
+  * PROGRESS BAR
+  *********************************************/
+
+.reveal .progress {
+    background: rgba(0, 0, 0, 0.2);
+    color: $linkColor;
+}
+
+/*********************************************
+  * PRINT BACKGROUND
+  *********************************************/
+@media print {
+    .backgrounds {
+        background-color: $backgroundColor;
+    }
+}

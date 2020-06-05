@@ -1,0 +1,23 @@
+{
+  "name": "hyperparam-optimization-framework",
+  "version": "0.0.0",
+  "description": "Talk for June 2020 Edmonton Python Meetup; An Overview of Machine Learning Hyperparameter Search Frameworks",
+  "main": "index.js",
+  "scripts": {
+    "start": "parcel src/index.html",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@git.udia.ca:alex/hyperparam-optimization-framework.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "parcel": "^2.0.0-alpha.3.2",
+    "reveal.js": "^4.0.2"
+  },
+  "devDependencies": {
+    "sass": "^1.26.8"
+  }
+}
