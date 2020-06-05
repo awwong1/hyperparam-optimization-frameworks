@@ -4,7 +4,7 @@
   "description": "Talk for June 2020 Edmonton Python Meetup; An Overview of Machine Learning Hyperparameter Search Frameworks",
   "main": "index.js",
   "scripts": {
-    "start": "parcel src/index.html",
+    "start": "parcel index.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

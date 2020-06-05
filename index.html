@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Overview of Hyperparameter Search Frameworks</title>
+
+  <meta name="description" content="An overview of Python Hyperparameter Search Frameworks">
+  <meta name="author" content="Alexander Wong">
+
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="node_modules/reveal.js/dist/reveal.css">
+  <link rel="stylesheet" href="node_modules/reveal.js/plugin/highlight/monokai.css">
+  <link rel="stylesheet" href="src/theme.scss">
+</head>
+
+<body>
+  <div class="reveal">
+    <div class="slides">
+      <section>
+        <h2 style="text-align: left;">Hyperparameter Search Frameworks:</h2>
+        <h3 style="text-align: left;">An Overview</h3>
+        <div style="text-align: right;">
+          <p>June 2020; Edmonton Python Meetup</p>
+          <p>
+            Alexander Wong&lt;<a href="mailto:alex.wong@ualberta.ca">alex.wong@ualberta.ca</a>&gt;<br/>
+            <a href="https://udia.ca">udia.ca</a>
+          </p>
+        </div>
+      </section>
+
+      <!-- Motivation -->
+      <section>
+        <section data-markdown>
+          <textarea data-template>
+            **Hyperparameters** are values used to control the learning algorithm and training process.
+          </textarea>
+        </section>
+        <section>
+          <figure>
+            <img src="assets/Colored_neural_network.svg" alt="Neural Network" />
+            <figcaption>
+              <a href="https://en.wikipedia.org/wiki/File:Colored_neural_network.svg">en.wikipedia.org/wiki/File:Colored_neural_network.svg</a>
+            </figcaption>
+          </figure>
+          <p style="font-size: 0.7em;">
+            <span class="fragment"># Hidden Layers,</span>
+            <span class="fragment"># Units Per Layer,</span>
+            <span class="fragment">Learning Rate,</span>
+            <span class="fragment">Optimizer,</span>
+            <span class="fragment">Dropout, Weight Decay, Batch Size, # Epochs, ...</span>
+          </p>
+        </section>
+        <section>
+          How do you determine the values that you should use for each hyperparameter?
+          <pre><code>parser = argparse.ArgumentParser(
+    description='PyTorch ImageNet Training')
+parser.add_argument(
+    'data', metavar='DIR',
+    help='path to dataset')
+parser.add_argument(
+    '-a', '--arch', metavar='ARCH', default='resnet18',
+    choices=model_names,
+    help='model architecture: ' +
+        ' | '.join(model_names) +
+        ' (default: resnet18)')
+parser.add_argument(
+    '-j', '--workers', default=4, type=int, metavar='N',
+    help='number of data loading workers (default: 4)')
+parser.add_argument(
+    '--epochs', default=90, type=int, metavar='N',
+    help='number of total epochs to run')
+parser.add_argument(
+    '--start-epoch', default=0, type=int, metavar='N',
+    help='manual epoch number (useful on restarts)')
+parser.add_argument(
+    '-b', '--batch-size', default=256, type=int,
+    metavar='N',
+    help='mini-batch size (default: 256), this is the total '
+            'batch size of all GPUs on the current node when '
+            'using Data Parallel or Distributed Data Parallel')
+parser.add_argument(
+    '--lr', '--learning-rate', default=0.1, type=float,
+    metavar='LR', help='initial learning rate', dest='lr')
+parser.add_argument(
+    '--momentum', default=0.9, type=float, metavar='M',
+    help='momentum')
+parser.add_argument(
+    '--wd', '--weight-decay', default=1e-4, type=float,
+    metavar='W', help='weight decay (default: 1e-4)',
+    dest='weight_decay')
+parser.add_argument(
+    '-p', '--print-freq', default=10, type=int,
+    metavar='N', help='print frequency (default: 10)')
+parser.add_argument(
+    '--resume', default='', type=str, metavar='PATH',
+    help='path to latest checkpoint (default: none)')
+parser.add_argument(
+    '-e', '--evaluate', dest='evaluate', action='store_true',
+    help='evaluate model on validation set')
+parser.add_argument(
+    '--pretrained', dest='pretrained', action='store_true',
+    help='use pre-trained model')
+parser.add_argument(
+    '--world-size', default=-1, type=int,
+    help='number of nodes for distributed training')
+parser.add_argument(
+    '--rank', default=-1, type=int,
+    help='node rank for distributed training')
+parser.add_argument(
+    '--dist-url', default='tcp://224.66.41.62:23456', type=str,
+    help='url used to set up distributed training')
+parser.add_argument(
+    '--dist-backend', default='nccl', type=str,
+    help='distributed backend')
+parser.add_argument(
+    '--seed', default=None, type=int,
+    help='seed for initializing training. ')
+parser.add_argument(
+    '--gpu', default=None, type=int,
+    help='GPU id to use.')
+parser.add_argument(
+    '--multiprocessing-distributed', action='store_true',
+    help='Use multi-processing distributed training to launch '
+          'N processes per node, which has N GPUs. This is the '
+          'fastest way to use PyTorch for either single node or '
+          'multi node data parallel training')
+          </code></pre>
+          <p>Taken from <a href="https://github.com/pytorch/examples/tree/master/imagenet">github.com/pytorch/examples/tree/master/imagenet</a></p>
+        </section>
+      </section>
+
+      <section>
+        <h2>Search!</h2>
+        <p>Optimize for an objective function, a <span class="fragment highlight-green">numerical value that indicates desireability</span>.</p>
+        <figure style="margin: 0 0 0.2em 0;">
+          <img src="assets/train_val_test.png" alt="Train Validation Test">
+          <figcaption><a href="https://towardsdatascience.com/train-validation-and-test-sets-72cb40cba9e7">towardsdatascience.com/train-validation-and-test-sets-72cb40cba9e7</a></figcaption>
+        </figure>
+        <ul style="font-size: 0.7em;">
+          <li class="fragment">Accuracy</li>
+          <li class="fragment">F-Score</li>
+          <li class="fragment">Loss</li>
+          <li class="fragment">... Task dependent!</li>
+        </ul>
+      </section>
+
+      <!-- Describe Hyperparameter Optimization Techniques -->
+      <section>
+        <section>
+          <h2>General Approaches</h2>
+          <p>There are four general categories of hyperparameter optimization algorithms.</p>
+        </section>
+        <section>
+          <h3>Exhaustive Search</h3>
+          <figure>
+            <img style="max-width: 50%;" src="assets/grid_random_search.png" alt="Grid vs Random Search">
+            <figcaption>
+              <a href="http://www.jmlr.org/papers/volume13/bergstra12a/bergstra12a.pdf">J. Bergstra and Y. Bengio, “Random Search for Hyper-Parameter Optimization,” p. 25.</a> Fig. 1
+            </figcaption>
+          </figure>
+          <ul>
+            <li class="fragment">Hand Tuning</li>
+            <li class="fragment">Grid Search</li>
+            <li class="fragment">Random Search</li>
+          </ul>
+        </section>
+        <section>
+          <h3>Evolutionary/Heuristic Search</h3>
+          <figure>
+            <img style="max-width: 75%;" src="assets/Evolutionary_Algorithm.svg_.png" alt="Evolutionary algorithm">
+            <figcaption>Naïve Evolution, <a href="https://softwareengineeringdaily.com/2018/06/15/digital-evolution-with-joel-lehman-dusan-misevic-and-jeff-clune/">softwareengineeringdaily.com/2018/06/15/digital-evolution-with-joel-lehman-dusan-misevic-and-jeff-clune/</a></figcaption>
+          </figure>
+        </section>
+        <section>
+          <h3>Bayseian Optimization</h3>
+          <figure>
+            <img src="assets/gp_model_step_4.png" alt="Bayseian Optimization">
+            <figcaption>Fit a gaussian process that maps your hyperparameters to the observed data, <a href="https://mlconf.com/blog/lets-talk-bayesian-optimization/">mlconf.com/blog/lets-talk-bayesian-optimization</a></figcaption>
+          </figure>
+        </section>
+        <section>
+          <h3>Gradient & RL Based</h3>
+          <p>Estimate gradient of hyperparameters for objective score. Treat hyperparameter optimization as a reinforcement learning problem.</p>
+          <dl>
+            <dt>
+              Trust Region Policy Optimization (2015)
+            </dt>
+            <dd>
+              <a href="http://arxiv.org/abs/1502.05477" style="font-size: 0.5em;">J. Schulman, S. Levine, P. Moritz, M. I. Jordan, and P. Abbeel, “Trust Region Policy Optimization,” arXiv:1502.05477
+              </a>
+            </dd>
+            <dt>
+              Proximal Policy Optimization (2017)
+            </dt>
+            <dd>
+              <a href="https://arxiv.org/abs/1707.06347" style="font-size: 0.5em;">J. Schulman, F. Wolski, P. Dhariwal, A. Radford, and O. Klimov, “Proximal Policy Optimization Algorithms,” arXiv:1707.06347</a>
+            </dd>
+          </dl>
+        </section>
+      </section>
+
+      <section>
+        <section>
+          <h2>Popular (Python) Hyperparameter Search Frameworks</h2>
+          <a href="https://www.githubcompare.com/deap/deap+microsoft/nni+facebookresearch/hydra+optuna/optuna" target="_blank" rel="noopener noreferrer">Comparison Table</a>
+        </section>
+        <section>
+          <h3>Underlying Search Mechanism</h3>
+          <dl>
+            <dt>DEAP</dt>
+            <dd>Genetic/Evolutionary</dd>
+            <dt>Optuna</dt>
+            <dd>Custom (see <a href="https://dl.acm.org/doi/pdf/10.1145/3292500.3330701">10.1145/3292500.3330701</a>)</dd>
+            <dt>Hydra</dt>
+            <dd>Custom (see <a href="https://github.com/facebookresearch/hydra">source code</a>)</dd>
+            <dt>Neural Network Intelligence</dt>
+            <dd>Multiple <em>simple algorithms</em>, configurable!</dd>
+          </dl>
+        </section>
+        <section>
+          <p><a href="https://en.wikipedia.org/wiki/Hyperparameter_optimization#Open-source_software">Many more frameworks to choose from!</a></p>
+        </section>
+      </section>
+
+      <section>
+        <h2>Demo</h2>
+      </section>
+
+      <section>
+        <h2>Closing Remarks</h2>
+        <dl style="font-size: 0.8em;">
+          <dt>Hyperparameters are important</dt>
+          <dd>It is not enough to provide model architecture and weights alone (how would you replicate?)</dd>
+          <dt>One component of data science</dt>
+          <dd>
+            Cleaning data, Feature selection/construction, Architecture family type, etc.
+          </dd>
+          <dt>Run multiple times for stability</dt>
+          <dd>Use experiment running frameworks to help in hyperparameter search.</dd>
+        </dl>
+        <p class="fragment">Thank you!</p>
+      </section>
+    </div>
+  </div>
+  <script src="src/main.js"></script>
+</body>
+
+</html>
