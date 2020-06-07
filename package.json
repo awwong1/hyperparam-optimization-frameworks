@@ -2,9 +2,9 @@
   "name": "hyperparam-optimization-framework",
   "version": "0.0.0",
   "description": "Talk for June 2020 Edmonton Python Meetup; An Overview of Machine Learning Hyperparameter Search Frameworks",
-  "main": "index.js",
+  "main": "src/index.html",
   "scripts": {
-    "start": "parcel index.html",
+    "start": "parcel src/index.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
