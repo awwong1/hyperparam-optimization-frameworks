@@ -186,3 +186,4 @@ $RECYCLE.BIN/
 .nfs*
 
 .parcel-cache
+venv
